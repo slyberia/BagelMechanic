@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-gold: #D4AF37;
+  --color-charcoal: var(--bg-primary);
+  --color-ink: var(--bg-secondary);
+  --color-text-main: var(--text-primary);
+  --color-text-muted: var(--text-secondary);
+}
+
+:root {
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #141414;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.4);
+  --border-color: rgba(255, 255, 255, 0.05);
+}
+
+.light {
+  --bg-primary: #F9F9F9;
+  --bg-secondary: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-secondary: rgba(0, 0, 0, 0.5);
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-charcoal text-text-main font-sans antialiased transition-colors duration-500;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  /* Focus visible styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-4 outline-gold;
+  }
+}
+
+/* Custom scrollbar for luxury feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-charcoal;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gold/30 rounded-full hover:bg-gold/50 transition-colors;
+}
