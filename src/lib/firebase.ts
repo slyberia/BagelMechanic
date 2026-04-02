@@ -21,7 +21,9 @@ let isFirebaseReady = false;
 try {
   const hasConfig = import.meta.env.VITE_FIREBASE_API_KEY && 
                    import.meta.env.VITE_FIREBASE_API_KEY !== 'undefined' &&
-                   import.meta.env.VITE_FIREBASE_PROJECT_ID;
+                   import.meta.env.VITE_FIREBASE_API_KEY !== 'YOUR_API_KEY' &&
+                   import.meta.env.VITE_FIREBASE_PROJECT_ID &&
+                   import.meta.env.VITE_FIREBASE_PROJECT_ID !== 'YOUR_PROJECT_ID';
 
   if (hasConfig) {
     const app = initializeApp(firebaseConfig);

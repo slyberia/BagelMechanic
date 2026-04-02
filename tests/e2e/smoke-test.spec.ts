@@ -42,7 +42,7 @@ test.describe('Elite Mechanic Smoke Test Suite', () => {
     
     // Open cart and clear it
     await basePage.openCart();
-    const clearCartBtn = page.locator('button:has-text("Clear Cart")');
+    const clearCartBtn = page.locator('button:has-text("Clear Selection")');
     await clearCartBtn.click();
     
     // Verify cart count resets

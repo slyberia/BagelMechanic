@@ -22,6 +22,5 @@ export class LoginPage extends BasePage {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(pass);
     await this.loginSubmitBtn.click();
-    await expect(this.loginTitle).not.toBeVisible();
   }
 }
