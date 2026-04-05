@@ -37,6 +37,12 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setIsLoading(true);
     setError(null);
 
+    if (!isFirebaseReady) {
+      window.dispatchEvent(new CustomEvent('mockLogin', { detail: { email } }));
+      onClose();
+      return;
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       onClose();

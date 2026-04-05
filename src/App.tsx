@@ -49,7 +49,16 @@ function App() {
   useEffect(() => {
     if (!isFirebaseReady || !auth) {
       console.warn('Firebase is not ready. Defaulting to logged-out state.');
-      return;
+      // Mock login listener for tests
+      const handleMockLogin = (e: any) => {
+        const email = e.detail?.email || 'mock@example.com';
+        setUser({ email, uid: 'mock-uid-123' } as User);
+        const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'admin@example.com';
+        setIsAdmin(email === adminEmail);
+        setCurrentView('dashboard');
+      };
+      window.addEventListener('mockLogin', handleMockLogin);
+      return () => window.removeEventListener('mockLogin', handleMockLogin);
     }
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
