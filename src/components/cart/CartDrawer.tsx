@@ -5,18 +5,16 @@ import { useEffect } from 'react';
 import { CartItem } from '../../types';
 import { formatCurrency } from '../../lib/utils';
 import { Button } from '../ui/Button';
+import { useCart } from '../../contexts/CartContext';
 
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  items: CartItem[];
-  onRemove: (id: string) => void;
   onCheckout: () => void;
-  onClear: () => void;
 }
 
-export function CartDrawer({ isOpen, onClose, items, onRemove, onCheckout, onClear }: CartDrawerProps) {
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+export function CartDrawer({ isOpen, onClose, onCheckout }: CartDrawerProps) {
+  const { cart: items, cartTotal: total, removeFromCart: onRemove, clearCart: onClear } = useCart();
 
   // Close on Escape
   useEffect(() => {

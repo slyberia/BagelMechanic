@@ -3,13 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { auth } from '../../lib/firebase';
+import { auth, isFirebaseReady } from '../../lib/firebase';
 import { 
   signInWithEmailAndPassword, 
   sendPasswordResetEmail, 
   GoogleAuthProvider, 
   signInWithPopup 
 } from 'firebase/auth';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
+  const { mockLogin } = useAuth();
 
   // Close on Escape
   useEffect(() => {
@@ -38,7 +40,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setError(null);
 
     if (!isFirebaseReady) {
-      window.dispatchEvent(new CustomEvent('mockLogin', { detail: { email } }));
+      mockLogin(email);
       onClose();
       return;
     }

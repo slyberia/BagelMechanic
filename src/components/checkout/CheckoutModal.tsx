@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, CreditCard, User, Calendar, Lock, Loader2, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { formatCurrency } from '../../lib/utils';
+import { useCart } from '../../contexts/CartContext';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface CheckoutModalProps {
 
 export function CheckoutModal({ isOpen, total, onClose, onSuccess }: CheckoutModalProps) {
   const [step, setStep] = useState<'form' | 'processing' | 'success'>('form');
+  const { cart, clearCart } = useCart();
   const [formData, setFormData] = useState({
     name: '',
     cardNumber: '',
@@ -30,15 +32,23 @@ export function CheckoutModal({ isOpen, total, onClose, onSuccess }: CheckoutMod
     return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCheckout = (e: React.FormEvent) => {
     e.preventDefault();
     setStep('processing');
     
+    // Mock Stripe Session Payload
+    console.log('Mock Stripe Session:', {
+      items: cart,
+      total,
+      customer: formData
+    });
+
     // Mock processing delay
     setTimeout(() => {
       setStep('success');
       // Final delay before closing and clearing cart
       setTimeout(() => {
+        clearCart();
         onSuccess();
         onClose();
         // Reset for next time
@@ -90,7 +100,7 @@ export function CheckoutModal({ isOpen, total, onClose, onSuccess }: CheckoutMod
                   <p className="text-text-muted text-xs mt-2 uppercase tracking-widest">Total Amount: {formatCurrency(total)}</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleCheckout} className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase tracking-widest text-text-muted ml-1" htmlFor="name">
                       Cardholder Name
