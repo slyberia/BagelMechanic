@@ -51,6 +51,7 @@ export function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -505,31 +506,42 @@ export function AdminDashboard() {
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <div className="relative group/status inline-block">
-                          <div className={cn(
-                            "px-3 py-1 text-[10px] uppercase tracking-widest font-bold border",
-                            booking.status === 'pending' && "bg-yellow-500/10 border-yellow-500/20 text-yellow-500",
-                            booking.status === 'confirmed' && "bg-blue-500/10 border-blue-500/20 text-blue-500",
-                            booking.status === 'completed' && "bg-green-500/10 border-green-500/20 text-green-500",
-                            booking.status === 'cancelled' && "bg-red-500/10 border-red-500/20 text-red-500"
-                          )}>
+                        <div className="relative inline-block">
+                          <button
+                            onClick={() => setOpenDropdownId(openDropdownId === booking.id ? null : booking.id)}
+                            data-testid="status-dropdown"
+                            aria-haspopup="true"
+                            aria-expanded={openDropdownId === booking.id}
+                            className={cn(
+                              "px-3 py-1 text-[10px] uppercase tracking-widest font-bold border focus-visible:outline-gold focus-visible:outline-2 focus-visible:outline-offset-2",
+                              booking.status === 'pending' && "bg-yellow-500/10 border-yellow-500/20 text-yellow-500",
+                              booking.status === 'confirmed' && "bg-blue-500/10 border-blue-500/20 text-blue-500",
+                              booking.status === 'completed' && "bg-green-500/10 border-green-500/20 text-green-500",
+                              booking.status === 'cancelled' && "bg-red-500/10 border-red-500/20 text-red-500"
+                            )}
+                          >
                             {booking.status}
-                          </div>
+                          </button>
                           
-                          <div className="absolute top-full left-0 mt-2 bg-charcoal border border-white/10 shadow-2xl z-20 hidden group-hover/status:block min-w-[120px]">
-                            {(['pending', 'confirmed', 'completed', 'cancelled'] as Booking['status'][]).map((status) => (
-                              <button
-                                key={status}
-                                onClick={() => handleUpdateBookingStatus(booking.id, status)}
-                                className={cn(
-                                  "w-full px-4 py-2 text-[10px] uppercase tracking-widest text-left hover:bg-white/5 transition-colors",
-                                  booking.status === status ? "text-gold" : "text-text-muted"
-                                )}
-                              >
-                                {status}
-                              </button>
-                            ))}
-                          </div>
+                          {openDropdownId === booking.id && (
+                            <div className="absolute top-full left-0 mt-2 bg-charcoal border border-white/10 shadow-2xl z-20 block min-w-[120px]">
+                              {(['pending', 'confirmed', 'completed', 'cancelled'] as Booking['status'][]).map((status) => (
+                                <button
+                                  key={status}
+                                  onClick={() => {
+                                    handleUpdateBookingStatus(booking.id, status);
+                                    setOpenDropdownId(null);
+                                  }}
+                                  className={cn(
+                                    "w-full px-4 py-2 text-[10px] uppercase tracking-widest text-left hover:bg-white/5 transition-colors focus-visible:bg-white/5 focus-visible:outline-gold",
+                                    booking.status === status ? "text-gold" : "text-text-muted"
+                                  )}
+                                >
+                                  {status}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td className="px-8 py-6 text-right">

@@ -5,24 +5,22 @@ import { useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { cn } from '../../lib/utils';
 import { useTheme } from '../../lib/ThemeContext';
-import { auth } from '../../lib/firebase';
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { LoginModal } from '../auth/LoginModal';
+import { useAuth } from '../../contexts/AuthContext';
+import { useCart } from '../../contexts/CartContext';
 
 interface NavbarProps {
   onCartOpen: () => void;
-  cartCount: number;
-  onViewChange: (view: any) => void;
-  currentView: any;
-  user: User | null;
-  isAdmin: boolean;
 }
 
-export function Navbar({ onCartOpen, cartCount, onViewChange, currentView, user, isAdmin }: NavbarProps) {
+export function Navbar({ onCartOpen }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+
+  const { user, isAdmin, currentView, setCurrentView: onViewChange, logout } = useAuth();
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -35,8 +33,7 @@ export function Navbar({ onCartOpen, cartCount, onViewChange, currentView, user,
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth);
-      onViewChange('landing');
+      logout();
     } catch (error) {
       console.error('Sign out error:', error);
     }

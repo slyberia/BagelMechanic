@@ -15,7 +15,7 @@ export class AdminPage extends BasePage {
     this.servicesTab = page.locator('#admin-tab-services');
     this.addServiceBtn = page.locator('#add-service-button');
     this.bookingRow = page.locator('tbody tr').first();
-    this.statusDropdown = page.locator('.group\\/status').first();
+    this.statusDropdown = page.getByTestId('status-dropdown').first();
   }
 
   async goToBookings() {
@@ -24,7 +24,7 @@ export class AdminPage extends BasePage {
   }
 
   async updateBookingStatus(status: string) {
-    await this.statusDropdown.hover();
+    await this.statusDropdown.click();
     const statusBtn = this.page.locator(`button:has-text("${status}")`).first();
     await statusBtn.click();
     await expect(this.page.locator(`text=Booking status updated to ${status}`)).toBeVisible();
