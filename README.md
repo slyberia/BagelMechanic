@@ -1,10 +1,10 @@
-# Elite Mechanic Consultations
+# BagelMechanic | Elite Mechanic Consultations
 
 A luxury-grade, production-ready e-commerce platform for high-end automotive consultation services.
 
 ## Project Overview
 
-This application provides a bespoke booking and consultation platform for elite automotive engineering. It features a minimalist, high-end design system, secure client authentication, real-time booking management, and a streamlined checkout process.
+BagelMechanic provides a bespoke booking and consultation platform for elite automotive engineering. Clients can book specialized sessions such as Pre-Purchase Inspections, Performance Engineering, and Restoration Strategies. It features a minimalist, high-end design system, secure client authentication, real-time booking management, and a streamlined checkout process.
 
 ## Tech Stack
 

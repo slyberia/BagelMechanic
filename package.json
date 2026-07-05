@@ -1,5 +1,7 @@
 {
-  "name": "elite-mechanic-consultations",
+  "name": "bagel-mechanic-consultations",
+  "description": "A luxury-grade e-commerce platform for high-end automotive engineering and mechanical consultation services.",
+  "keywords": ["automotive", "mechanic", "consultation", "react", "vite", "firebase", "e-commerce"],
   "private": true,
   "version": "0.0.0",
   "type": "module",
