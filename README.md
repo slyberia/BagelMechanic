@@ -8,7 +8,7 @@ This application provides a bespoke booking and consultation platform for elite 
 
 ## Tech Stack
 
-- **Frontend**: React 18+ (Vite)
+- **Frontend**: React 19 (Vite)
 - **Styling**: Tailwind CSS
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
@@ -65,27 +65,46 @@ This application provides a bespoke booking and consultation platform for elite 
    ```
    The application will be available at `http://localhost:3000`.
 
-## Production Deployment (Firebase)
+## Production Deployment (Google Cloud Run)
 
-1. **Build the application**:
-   ```bash
-   npm run build
-   ```
+The app ships as a static SPA served by nginx in a container (see `Dockerfile`). Firebase web config is **public client config** and is baked into the bundle at build time via Docker build args.
 
-2. **Initialize Firebase CLI**:
-   ```bash
-   firebase init
-   ```
-   Select **Hosting** and **Firestore**.
+### Automated (recommended)
 
-3. **Deploy to Firebase**:
-   ```bash
-   firebase deploy
-   ```
+`cloudbuild.yaml` builds the image, pushes it to Artifact Registry, and deploys to Cloud Run. One-time setup (Artifact Registry repo, Secret Manager entries for the `VITE_*` values, IAM roles, and a build trigger on `main`) is documented at the top of `cloudbuild.yaml`. To run it manually:
+
+```bash
+gcloud builds submit --config cloudbuild.yaml
+```
+
+### Manual
+
+```bash
+docker build \
+  --build-arg VITE_FIREBASE_API_KEY=... \
+  --build-arg VITE_FIREBASE_AUTH_DOMAIN=... \
+  --build-arg VITE_FIREBASE_PROJECT_ID=... \
+  --build-arg VITE_FIREBASE_STORAGE_BUCKET=... \
+  --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID=... \
+  --build-arg VITE_FIREBASE_APP_ID=... \
+  --build-arg VITE_ADMIN_EMAIL=... \
+  -t REGION-docker.pkg.dev/PROJECT/REPO/elite-mechanic-consultations .
+
+docker push REGION-docker.pkg.dev/PROJECT/REPO/elite-mechanic-consultations
+gcloud run deploy elite-mechanic-consultations \
+  --image REGION-docker.pkg.dev/PROJECT/REPO/elite-mechanic-consultations \
+  --region REGION --allow-unauthenticated
+```
+
+> **Note:** Setting `VITE_*` variables on the Cloud Run *service* has no effect — Vite inlines them at **build** time. If the config is missing at build time the app silently falls back to offline/mock mode (see `DEVELOPMENT.md`).
 
 ## Security & Rules
 
-The application includes a `firestore.rules` file that enforces strict data validation and ownership-based access control. Ensure these rules are deployed to your Firebase project to secure client data.
+The application includes a `firestore.rules` file (referenced by `firebase.json`) that enforces ownership-based access control. Rules are deployed to the Firebase project independently of the Cloud Run app:
+
+```bash
+npx firebase-tools deploy --only firestore:rules --project <PROJECT_ID>
+```
 
 ---
 *Precision Engineering • Bespoke Consultation*
